@@ -1,3 +1,5 @@
+using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,10 +9,17 @@ namespace API.Controllers
     //api/account
     public class AccountController:ControllerBase
     {
-        [HttpGet]
-        public string Hi() 
+        private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
+
+        public AccountController(UserManager<AppUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IConfiguration configuration)
         {
-            return "Hi";
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _configuration = configuration;
         }
     }
 }
