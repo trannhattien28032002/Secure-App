@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace API.Models 
+namespace API.Models
 {
-    public class AppUser:IdentityUser 
+    public class AppUser : IdentityUser
     {
-        public string? MyProperty { get; set; }
+        public string? FullName { get; set; }
     }
 }
