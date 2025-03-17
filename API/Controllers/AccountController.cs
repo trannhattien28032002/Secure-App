@@ -169,5 +169,17 @@ namespace API.Controllers
                 AccessFailedCount = user.AccessFailedCount,
             });
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDetailDto>>> GetUsers() {
+            var users = await _userManager.Users.Select(u=> new UserDetailDto{
+                Id = u.Id,
+                Email = u.Email,
+                FullName = u.FullName,
+                Roles = _userManager.GetRolesAsync(u).Result.ToArray()
+            }).ToListAsync();
+
+            return Ok(users);
+        }
     }
 }
