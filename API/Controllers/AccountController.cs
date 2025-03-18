@@ -3,11 +3,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using API.Dtos;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     //api/account
@@ -26,6 +28,7 @@ namespace API.Controllers
             _configuration = configuration;
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<string>> Register(RegisterDto registerDto)
         {
@@ -68,6 +71,7 @@ namespace API.Controllers
         }
 
         // api/account/login
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponseDto>> Login(LoginDto loginDto)
         {
@@ -148,22 +152,26 @@ namespace API.Controllers
 
         // api/account/detail
         [HttpGet("Detail")]
-        public async Task<ActionResult<UserDetailDto>> GetUserDetail() {
+        public async Task<ActionResult<UserDetailDto>> GetUserDetail()
+        {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user - await _userManager.FindByIdAsync(currentUserId);
+            var user -await _userManager.FindByIdAsync(currentUserId);
 
-            if (user is null) {
-                return NotFound(new AuthResponseDto{
+            if (user is null)
+            {
+                return NotFound(new AuthResponseDto
+                {
                     IsSuccess = false,
                     Message = "User not found"
                 });
             }
 
-            return Ok(new UserDetailDto{
+            return Ok(new UserDetailDto
+            {
                 Id = user.Id,
                 Email = user.Email,
                 FullName = user.FullName,
-                Roles = [..await _userManager.GetRolesAsync(user)],
+                Roles = [.. await _userManager.GetRolesAsync(user)],
                 PhoneNumber = user.PhoneNumber,
                 PhoneNumberConfirmed = user.PhoneNumberConfirmed,
                 AccessFailedCount = user.AccessFailedCount,
@@ -171,8 +179,10 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDetailDto>>> GetUsers() {
-            var users = await _userManager.Users.Select(u=> new UserDetailDto{
+        public async Task<ActionResult<IEnumerable<UserDetailDto>>> GetUsers()
+        {
+            var users = await _userManager.Users.Select(u => new UserDetailDto
+            {
                 Id = u.Id,
                 Email = u.Email,
                 FullName = u.FullName,
