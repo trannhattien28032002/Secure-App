@@ -1,3 +1,4 @@
+using API.Dtos;
 using API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -38,6 +39,19 @@ namespace API.Controllers
             }
 
             return BadRequest("Role creation failed.");
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetRoles()
+        {
+            // List of users with total user count
+            var roles = await _roleManager.Roles.Select(r=>new RoleResponseDto {
+                Id = r.Id,
+                Name = r.Name,
+                TotalUsers = _userManager.GetUsersInRoleAsync(r.Name!).Result.Count
+            }).ToListAsync();
+
+            return Ok(roles);
         }
     }
 }
